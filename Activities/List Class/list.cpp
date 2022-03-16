@@ -85,7 +85,7 @@ public:
     {
         Lista *nova_lista = new Lista();
 
-        if (!nova_lista->validacao(nova_lista))
+        if (!validacao(nova_lista))
         {
             printf("\nErro: Não foi possível criar a Lista.\n");
             return NULL;
@@ -108,24 +108,24 @@ public:
 
     bool anexar(Lista *l, TipoElemento elemento)
     {
-        if (!l->validacao(l))
+        if (!validacao(l))
         {
             return false;
         }
 
         No *no = no->criar(elemento);
 
-        if (l->vazia())
+        if (vazia())
         {
-            l->inicio = no;
+            inicio = no;
         }
         else
         {
-            l->fim->proximo = no;
-            no->anterior = l->fim;
+            fim->proximo = no;
+            no->anterior = fim;
         }
 
-        l->fim = no;
+        fim = no;
         qtde++;
 
         printf("\nElemento %d anexado.\n", elemento);
@@ -302,7 +302,7 @@ public:
 
     bool buscar(Lista *l, int posicao, TipoElemento *endereco)
     {
-        if (!l->validacao(l) || !l->posicaoValida(posicao))
+        if (!validacao(l) || !posicaoValida(posicao))
         {
             printf("\nErro: Dados inválidos.\n");
             return false;
@@ -310,7 +310,7 @@ public:
 
         int i = 0;
 
-        for (No *aux = l->inicio; aux != NULL; aux = aux->proximo)
+        for (No *aux = inicio; aux != NULL; aux = aux->proximo)
         {
             if (i == posicao)
             {
@@ -327,7 +327,7 @@ public:
 
     int tamanho(Lista *l)
     {
-        if (!l->validacao(l))
+        if (!validacao(l))
         {
             return -1;
         }
@@ -342,7 +342,7 @@ public:
 
     bool toString(Lista *l, char *str)
     {
-        if (!l->validacao(l))
+        if (!validacao(l))
         {
             return false;
         }
@@ -352,7 +352,7 @@ public:
         str[0] = '\0';
         strcat(str, "[");
 
-        for (No *aux = l->inicio; aux != NULL; aux = aux->proximo)
+        for (No *aux = inicio; aux != NULL; aux = aux->proximo)
         {
             sprintf(aux_char, "%d", aux->valor);
             strcat(str, aux_char);
