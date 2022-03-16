@@ -50,7 +50,32 @@ private:
 
     bool posicaoValida(int pos)
     {
-        return pos >= qtde || pos < 0 ? false : true;
+        return pos > qtde || pos < 0 ? false : true;
+    }
+
+    bool posicaoPreenchida(int pos)
+    {
+        if (pos < 0)
+        {
+            return false;
+        }
+
+        if (pos >= qtde)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    No *enderecoNo(int pos)
+    {
+        No *aux = inicio;
+        for (int cont = 0; cont < pos; cont++)
+        {
+            aux = aux->proximo;
+        }
+        return aux;
     }
 
     // Métodos principais
@@ -110,29 +135,128 @@ public:
 
     bool inserir(Lista *l, TipoElemento elemento, int posicao)
     {
-        // int i = 0;
+        if (!validacao(l))
+        {
+            return false;
+        }
 
-        // for (No *aux = l->inicio; aux != NULL; aux = aux->proximo)
-        // {
-        //     if (i == posicao)
-        //     {
-        //         aux->valor = elemento;
-        //     }
+        if (!posicaoValida(posicao))
+        {
+            return false;
+        }
 
-        //     i++;
-        // }
+        No *novo = novo->criar(elemento);
+        if (vazia())
+        {
+            inicio = fim = novo;
+            qtde++;
+        }
+        else if (posicao == qtde)
+        {
+            anexar(l, elemento);
+        }
+        else if (posicao == 0)
+        {
+            novo->proximo = inicio;
+            inicio->anterior = novo;
+            inicio = novo;
+            qtde++;
+        }
+        else
+        {
+            No *aux = enderecoNo(posicao - 1);
 
-        // printf("\nElemento %d foi inserido com sucesso.\n", elemento);
+            novo->proximo = aux->proximo;
+            novo->anterior = aux;
+            novo->proximo->anterior = novo;
+            aux->proximo = novo;
+        }
+
+        printf("\nElemento %d inserido na posição %d.\n", elemento, posicao);
 
         return true;
     }
 
-    bool removerPosicao(Lista *l, int posicao, TipoElemento *endereco);
-    int removerElemento(Lista *l, TipoElemento elemento);
+    bool removerPosicao(Lista *l, int posicao, TipoElemento *endereco)
+    {
+        if (!validacao(l))
+        {
+            return false;
+        }
+
+        if (vazia())
+        {
+            return false;
+        }
+
+        if (!posicaoPreenchida(posicao))
+        {
+            return false;
+        }
+
+        No *aux;
+        if (qtde == 1)
+        {
+
+            aux = inicio;
+            inicio = fim = NULL;
+        }
+        else if (posicao == 0)
+        {
+            aux = inicio;
+            inicio = inicio->proximo;
+            inicio->anterior = NULL;
+            aux->proximo = NULL;
+        }
+        else if (posicao == qtde - 1)
+        {
+            aux = fim;
+            fim = fim->anterior;
+            fim->proximo = NULL;
+            aux->anterior = NULL;
+        }
+        else
+        {
+            aux = enderecoNo(posicao);
+            aux->proximo->anterior = aux->anterior;
+            aux->anterior->proximo = aux->proximo;
+            aux->proximo = NULL;
+            aux->anterior = NULL;
+        }
+
+        *endereco = aux->valor;
+        delete aux;
+        qtde--;
+
+        printf("\nPosição %d removida.\n", posicao);
+
+        return true;
+    }
+
+    bool removerElemento(Lista *l, TipoElemento elemento)
+    {
+        if (!validacao(l))
+        {
+            return false;
+        }
+
+        int pos = posicao(l, elemento);
+        if (pos == -1)
+        {
+            return false;
+        }
+
+        TipoElemento item;
+        removerPosicao(l, pos, &item);
+
+        printf("\nElemento %d removido.\n", item);
+
+        return true;
+    }
 
     bool substituir(Lista *l, int posicao, TipoElemento novoElemento)
     {
-        if (!l->posicaoValida(posicao))
+        if (!posicaoPreenchida(posicao))
         {
             return false;
         }
@@ -154,28 +278,26 @@ public:
         return true;
     }
 
-    bool posicao(Lista *l, TipoElemento elemento)
+    int posicao(Lista *l, TipoElemento elemento)
     {
-        if (!l->validacao(l))
+        if (!validacao(l))
         {
             return -1;
         }
 
         int i = 0;
 
-        for (No *aux = l->inicio; aux != NULL; aux = aux->proximo)
+        for (No *aux = inicio; aux != NULL; aux = aux->proximo)
         {
             if (aux->valor == elemento)
             {
-                printf("\nElemento %d na posição %d.\n", elemento, i);
-                return true;
+                return i;
             }
 
             i++;
         }
 
-        printf("\nErro: Elemento não encontrado.\n");
-        return false;
+        return -1;
     }
 
     bool buscar(Lista *l, int posicao, TipoElemento *endereco)
@@ -257,9 +379,19 @@ int main()
     l->anexar(l, 40);
     l->anexar(l, 50);
     l->substituir(l, 4, 45);
+    l->inserir(l, 35, 3);
 
-    l->posicao(l, 30);
-
+    int elem = 30;
+    int pos = l->posicao(l, elem);
+    if (pos != -1)
+    {
+        printf("\nElemento %d na posição %d.\n", elem, pos);
+    }
+    else
+    {
+        printf("\nErro: Elemento não encontrado.\n");
+    }
+    
     char str[100];
 
     if (l->toString(l, str))
@@ -280,9 +412,29 @@ int main()
         printf("\nTamanho = %d\n", l->tamanho(l));
     }
 
-    int elem;
+    l->removerPosicao(l, 1, &elem);
 
-    l->buscar(l, 4, &elem);
+    if (l->toString(l, str))
+    {
+        printf("\nLista = %s\n", str);
+    }
+    else
+    {
+        printf("\nErro: Não foi possível imprimir a lista.\n");
+    }
+
+    l->removerElemento(l, 10);
+
+    if (l->toString(l, str))
+    {
+        printf("\nLista = %s\n", str);
+    }
+    else
+    {
+        printf("\nErro: Não foi possível imprimir a lista.\n");
+    }
+
+    l->buscar(l, 2, &elem);
 
     l->destruir();
 
