@@ -13,17 +13,17 @@ No::No(TipoElemento elem)
 
 Lista::Lista()
 {
-    int qtde = 0;
-    No *inicio = NULL;
-    No *fim = NULL;
+    qtde = 0;
+    inicio = NULL;
+    fim = NULL;
     cout << "\nLista criada.\n";
 }
 
 Lista::~Lista()
 {
-    int qtde = 0;
-    No *inicio = NULL;
-    No *fim = NULL;
+    qtde = 0;
+    inicio = NULL;
+    fim = NULL;
     cout << "\nLista destruída.\n";
 }
 
@@ -63,30 +63,29 @@ No *Lista::enderecoNo(int pos)
 
 void Lista::destruir()
 {
-    delete this;
+    free(this->inicio);
+    free(this->fim);
 }
 
 bool Lista::anexar(TipoElemento elemento)
 {
-    No no(elemento);
+    No *no = new No(elemento);
 
     if (vazia())
     {
-        inicio = &no;
-        printf("\na\n");
+        inicio = no;
     }
     else
     {
-        fim->proximo = &no;
-        (&no)->anterior = fim;
-        printf("\n%d\n", fim->valor);
+        fim->proximo = no;
+        no->anterior = fim;
     }
-    printf("\n%d\n", inicio->valor);
-    fim = &no;
+    
+    fim = no;
 
     qtde++;
 
-    printf("\nElemento %d anexado.\n", elemento);
+    cout << "\nElemento " << elemento << " anexado.\n" ;
 
     return true;
 }
@@ -98,11 +97,11 @@ bool Lista::inserir(TipoElemento elemento, int posicao)
         return false;
     }
 
-    No novo(elemento);
+    No *novo = new No(elemento);
 
     if (vazia())
     {
-        inicio = fim = &novo;
+        inicio = fim = novo;
         qtde++;
     }
     else if (posicao == qtde)
@@ -111,22 +110,22 @@ bool Lista::inserir(TipoElemento elemento, int posicao)
     }
     else if (posicao == 0)
     {
-        (&novo)->proximo = inicio;
-        inicio->anterior = &novo;
-        inicio = &novo;
+        novo->proximo = inicio;
+        inicio->anterior = novo;
+        inicio = novo;
         qtde++;
     }
     else
     {
         No *aux = enderecoNo(posicao - 1);
 
-        (&novo)->proximo = aux->proximo;
-        (&novo)->anterior = aux;
-        (&novo)->proximo->anterior = (&novo);
-        aux->proximo = (&novo);
+        novo->proximo = aux->proximo;
+        novo->anterior = aux;
+        novo->proximo->anterior = novo;
+        aux->proximo = novo;
     }
 
-    printf("\nElemento %d inserido na posição %d.\n", elemento, posicao);
+    cout << "\nElemento " << elemento << " inserido na posição " << posicao << ".\n";
 
     return true;
 }
@@ -177,7 +176,7 @@ bool Lista::removerPosicao(int posicao, TipoElemento *endereco)
     delete aux;
     qtde--;
 
-    printf("\nPosição %d removida.\n", posicao);
+    cout << "\nPosição " << posicao << " removida.\n" ;
 
     return true;
 }
@@ -193,7 +192,7 @@ bool Lista::removerElemento(TipoElemento elemento)
     TipoElemento item;
     removerPosicao(pos, &item);
 
-    printf("\nElemento %d removido.\n", item);
+    cout << "\nElemento " << item << " removido.\n";
 
     return true;
 }
@@ -217,7 +216,7 @@ bool Lista::substituir(int posicao, TipoElemento novoElemento)
         i++;
     }
 
-    printf("\nSubstituição na posição %d por %d.\n", posicao, novoElemento);
+    cout << "\nSubstituição na posição " << posicao << " por " << novoElemento << ".\n";
 
     return true;
 }
@@ -243,7 +242,7 @@ bool Lista::buscar(int posicao, TipoElemento *endereco)
 {
     if (!posicaoValida(posicao))
     {
-        printf("\nErro: Dados inválidos.\n");
+        cout << "\nErro: Dados inválidos.\n";
         return false;
     }
 
@@ -254,7 +253,7 @@ bool Lista::buscar(int posicao, TipoElemento *endereco)
         if (i == posicao)
         {
             *endereco = aux->valor;
-            printf("\nA posição %d contém o elemento %d.\n", i, *endereco);
+            cout << "\nA posição " << i << " contém o elemento " << *endereco << ".\n";
             return true;
         }
 
@@ -280,8 +279,6 @@ bool Lista::toString(char *str)
 
     str[0] = '\0';
     strcat(str, "[");
-    printf("\nqtde: %d\n", qtde);
-    printf("\ninicio: %d\n", inicio->valor);
 
     for (No *aux = inicio; aux != NULL; aux = aux->proximo)
     {
@@ -293,7 +290,7 @@ bool Lista::toString(char *str)
             strcat(str, ", ");
         }
     }
-    printf("\nC\n");
+
     strcat(str, "]");
 
     return true;
