@@ -6,13 +6,13 @@ int main()
 {
     Lista l;
 
+    char str[100];
+
     l.anexar(10);
     l.anexar(20);
     l.anexar(30);
     l.anexar(40);
     l.anexar(50);
-
-    char str[100];
 
     if (l.toString(str))
     {
