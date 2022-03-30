@@ -4,7 +4,7 @@ using namespace std;
 
 int main()
 {
-    Lista l;
+    myLista l;
 
     char str[100];
 

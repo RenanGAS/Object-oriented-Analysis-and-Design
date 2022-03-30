@@ -3,7 +3,6 @@
 #include "classes.hpp"
 using namespace std;
 
-
 No::No(TipoElemento elem)
 {
     valor = elem;
@@ -61,13 +60,13 @@ No *Lista::enderecoNo(int pos)
 
 // Métodos principais
 
-void Lista::destruir()
+void myLista::destruir()
 {
     free(this->inicio);
     free(this->fim);
 }
 
-bool Lista::anexar(TipoElemento elemento)
+bool myLista::anexar(TipoElemento elemento)
 {
     No *no = new No(elemento);
 
@@ -90,7 +89,7 @@ bool Lista::anexar(TipoElemento elemento)
     return true;
 }
 
-bool Lista::inserir(TipoElemento elemento, int posicao)
+bool myLista::inserir(TipoElemento elemento, int posicao)
 {
     if (!posicaoValida(posicao))
     {
@@ -130,7 +129,7 @@ bool Lista::inserir(TipoElemento elemento, int posicao)
     return true;
 }
 
-bool Lista::removerPosicao(int posicao, TipoElemento *endereco)
+bool myLista::removerPosicao(int posicao, TipoElemento *endereco)
 {
     if (vazia())
     {
@@ -181,7 +180,7 @@ bool Lista::removerPosicao(int posicao, TipoElemento *endereco)
     return true;
 }
 
-bool Lista::removerElemento(TipoElemento elemento)
+bool myLista::removerElemento(TipoElemento elemento)
 {
     int pos = posicao(elemento);
     if (pos == -1)
@@ -197,7 +196,7 @@ bool Lista::removerElemento(TipoElemento elemento)
     return true;
 }
 
-bool Lista::substituir(int posicao, TipoElemento novoElemento)
+bool myLista::substituir(int posicao, TipoElemento novoElemento)
 {
     if (!posicaoPreenchida(posicao))
     {
@@ -221,7 +220,7 @@ bool Lista::substituir(int posicao, TipoElemento novoElemento)
     return true;
 }
 
-int Lista::posicao(TipoElemento elemento)
+int myLista::posicao(TipoElemento elemento)
 {
     int i = 0;
 
@@ -238,7 +237,7 @@ int Lista::posicao(TipoElemento elemento)
     return -1;
 }
 
-bool Lista::buscar(int posicao, TipoElemento *endereco)
+bool myLista::buscar(int posicao, TipoElemento *endereco)
 {
     if (!posicaoValida(posicao))
     {
@@ -263,17 +262,17 @@ bool Lista::buscar(int posicao, TipoElemento *endereco)
     return false;
 }
 
-int Lista::tamanho()
+int myLista::tamanho()
 {
     return qtde;
 }
 
-bool Lista::vazia()
+bool myLista::vazia()
 {
     return qtde == 0 ? true : false;
 }
 
-bool Lista::toString(char *str)
+bool myLista::toString(char *str)
 {
     char aux_char[100];
 
